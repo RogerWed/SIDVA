@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIDVA</title>
+    <link rel="icon" href="icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --secondary: #4CAF50;
+            --danger: #f44336;
+            --touch-size: 50px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 70px;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            -webkit-appearance: none;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            height: var(--touch-size);
+            font-weight: bold;
+            transition: filter 0.2s;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            filter: brightness(90%);
+            transform: scale(0.98);
+        }
+
+        .sales-list {
+            margin-top: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sale-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .sale-item > div {
+            flex: 1 1 45%;
+            min-width: 120px;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            touch-action: none;
+        }
+
+        .pending { background: #fff3cd; color: #856404; }
+        .paid { background: #d4edda; color: #155724; }
+
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            padding: 12px 20px;
+            border-radius: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            padding: 15px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-card {
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .input-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Ventas de Agua💧</h1>
+        
+        <div class="card" id="mainSection">
+            <div class="input-group">
+                <input type="date" id="fecha" required>
+                <input type="text" id="nombre" placeholder="Cliente" required>
+                <input type="number" id="cantidad" placeholder="Botellones" min="1" required>
+                <input type="number" id="litros" placeholder="Litros por botellón" min="1" required>
+                <input type="number" id="monto" placeholder="Monto (Bs)" min="0" step="0.01" required>
+                <select id="pago">
+                    <option value="efectivo">Efectivo</option>
+                    <option value="movil">Pago Móvil</option>
+                </select>
+            </div>
+            <button onclick="agregarVenta()">➕ Registrar</button>
+        </div>
+
+        <div class="card" id="statsSection">
+            <h2>📊 Estadísticas</h2>
+            <div class="stats-grid" id="stats"></div>
+        </div>
+
+        <div class="card" id="salesSection">
+            <h2>📋 Ventas</h2>
+            <div class="sales-list" id="sales-list"></div>
+        </div>
+
+        <div class="card" id="actionsSection">
+            <h2>⚙️ Acciones</h2>
+            <textarea id="observacion" placeholder="Observaciones..." rows="2"></textarea>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="generarPDF()" style="background: var(--secondary); flex: 1;">📄 General Cierre del Dia</button>
+                <button onclick="reiniciarSistema()" style="background: var(--danger); flex: 1;">🔄 Reiniciar Sistema</button>
+				
+            </div>
+        </div>	
+		
+        <div class="card" id="actionsSection">
+			<footer>
+                ©2025 RogerWed. | App Ver 5.0 | Interfaz HyperVission 2.5 
+            </footer>	
+        </div>		
+		
+    </div>
+    <nav class="mobile-bottom-nav">
+        <button class="nav-button" onclick="scrollToSection('statsSection')">📊 Stats</button>
+        <button class="nav-button" onclick="scrollToSection('salesSection')">📋 Ventas</button>
+        <button class="nav-button" onclick="scrollToSection('actionsSection')">⚙️ Acciones</button>
+    </nav>
+
+    <script>
+        // Estado de la aplicación
+        let estadoApp = JSON.parse(localStorage.getItem('estadoVentas')) || {
+            ventas: [],
+            observacion: ''
+        };
+
+        // Funciones de navegación
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Lógica principal
+        function guardarEstado() {
+            localStorage.setItem('estadoVentas', JSON.stringify(estadoApp));
+        }
+
+        function agregarVenta() {
+            const nuevaVenta = {
+                fecha: document.getElementById('fecha').value,
+                nombre: document.getElementById('nombre').value,
+                cantidad: parseInt(document.getElementById('cantidad').value),
+                litros: parseInt(document.getElementById('litros').value),
+                monto: parseFloat(document.getElementById('monto').value),
+                pago: document.getElementById('pago').value,
+                estado: 'pending'
+            };
+
+            estadoApp.ventas.push(nuevaVenta);
+            guardarEstado();
+            actualizarInterfaz();
+        }
+
+        function actualizarInterfaz() {
+            mostrarVentas();
+            actualizarEstadisticas();
+            document.getElementById('observacion').value = estadoApp.observacion;
+        }
+
+        function mostrarVentas() {
+            const lista = document.getElementById('sales-list');
+            lista.innerHTML = estadoApp.ventas.map((venta, index) => `
+                <div class="sale-item">
+                    <div>📅 ${venta.fecha}</div>
+                    <div>👤 ${venta.nombre}</div>
+                    <div>💧 ${venta.cantidad} bot.</div>
+                    <div>⚖️ ${venta.litros}L</div>
+                    <div>💰 Bs ${venta.monto.toFixed(2)}</div>
+                    <div class="status ${venta.estado}" onclick="cambiarEstado(${index})">
+                        ${venta.estado === 'paid' ? 'Pagado ✅' : 'Pendiente ⏳'}
+                    </div>
+                    <div>${venta.pago === 'efectivo' ? 'Efectivo 💵' : 'Pago Móvil 📱'}</div>
+                    <button onclick="eliminarVenta(${index})" style="background: var(--danger); width: 100%;">🗑️ Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        function actualizarEstadisticas() {
+            const stats = document.getElementById('stats');
+            const totalBotellones = estadoApp.ventas.reduce((a, b) => a + b.cantidad, 0);
+            const totalLitros = estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0);
+            const efectivo = estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0);
+            const movil = estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0);
+            const total = efectivo + movil;
+
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Botellones</h3>
+                    <h2>${totalBotellones}</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Litros Vendidos</h3>
+                    <h2>${totalLitros}L</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Efectivo</h3>
+                    <h2>Bs ${efectivo.toFixed(2)}</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Pago Móvil</h3>
+                    <h2>Bs ${movil.toFixed(2)}</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Total General</h3>
+                    <h2>Bs ${total.toFixed(2)}</h2>
+                </div>
+            `;
+        }
+
+        function cambiarEstado(index) {
+            estadoApp.ventas[index].estado = estadoApp.ventas[index].estado === 'paid' ? 'pending' : 'paid';
+            guardarEstado();
+            mostrarVentas();
+        }
+
+        function eliminarVenta(index) {
+            if(confirm('¿Seguro que deseas eliminar esta venta?')) {
+                estadoApp.ventas.splice(index, 1);
+                guardarEstado();
+                actualizarInterfaz();
+            }
+        }
+
+        function generarPDF() {
+            estadoApp.observacion = document.getElementById('observacion').value;
+            guardarEstado();
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const fecha = new Date().toLocaleDateString('es-VE');
+            
+            doc.setFontSize(16);
+            doc.text(`Reporte Diario - ${fecha}`, 15, 15);
+            
+            doc.setFontSize(12);
+            doc.text(`Observación: ${estadoApp.observacion}`, 15, 30);
+            
+            const y = 40;
+            
+            // Estadísticas
+            const stats = [
+                `Total Botellones: ${estadoApp.ventas.reduce((a, b) => a + b.cantidad, 0)}`,
+                `Litros: ${estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0)}L`,
+                `Efectivo: Bs ${estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
+                `Pago Móvil: Bs ${estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
+                `Total: Bs ${(estadoApp.ventas.reduce((a, b) => a + b.monto, 0)).toFixed(2)}`
+            ];
+            
+            stats.forEach((text, index) => {
+                doc.text(text, 15, y + (index * 10));
+            });
+            
+			
+			
+            doc.save(`reporte_${fecha.replace(/\//g, '-')}.pdf`);
+        }
+
+        function reiniciarSistema() {
+            if (confirm('¿Estás seguro de reiniciar todos los datos?')) {
+                localStorage.clear();
+                estadoApp = { ventas: [], observacion: '' };
+                actualizarInterfaz();
+            }
+        }
+
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker registrado');
+                });
+            });
+        }
+
+        // Inicialización
+        document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+        actualizarInterfaz();
+    </script>
+</body>
+</html>
