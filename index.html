@@ -2,193 +2,236 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SIDVA</title>
-	<link href="icon.png" rel="icon">
+    <link href="icon.png" rel="icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary: #2196F3;
             --secondary: #4CAF50;
             --danger: #f44336;
+            --touch-size: 50px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f3f6f9 0%, #e3e8ed 100%);
-            padding: 20px;
-            min-height: 100vh;
+            background: #f0f4f8;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 70px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 100%;
+            padding: 10px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .input-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         input, select, textarea, button {
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 8px rgba(33, 150, 243, 0.2);
+            background: white;
+            -webkit-appearance: none;
         }
 
         button {
             background: var(--primary);
             color: white;
-            cursor: pointer;
-            border: none;
+            height: var(--touch-size);
             font-weight: bold;
+            transition: filter 0.2s;
+            touch-action: manipulation;
         }
 
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+        button:active {
+            filter: brightness(90%);
+            transform: scale(0.98);
         }
 
         .sales-list {
-            margin-top: 30px;
+            margin-top: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .sale-item {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            padding: 15px;
-            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            margin: 8px 0;
             background: white;
             border-radius: 8px;
-            animation: appear 0.5s ease;
+            position: relative;
         }
 
-        @keyframes appear {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .sale-item > div {
+            flex: 1 1 45%;
+            min-width: 120px;
+            padding: 5px;
+            font-size: 14px;
         }
 
         .status {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.3s;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            touch-action: none;
         }
 
         .pending { background: #fff3cd; color: #856404; }
         .paid { background: #d4edda; color: #155724; }
 
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            padding: 12px 20px;
+            border-radius: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            padding: 15px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
         }
 
         .stat-card {
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
+            background: #f8f9fa;
             text-align: center;
-            background: white;
-            animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-         footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9em;
+        @media (min-width: 600px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .input-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="text-align: center; margin: 30px 0; color: #333;">Sistema de Ventas de Agua 💧</h1>
+        <h1>Sistema de Ventas de Agua💧</h1>
         
-        <div class="card">
-            <h2>Nueva Venta</h2>
+        <div class="card" id="mainSection">
             <div class="input-group">
                 <input type="date" id="fecha" required>
-                <input type="text" id="nombre" placeholder="Nombre del cliente" required>
-                <input type="number" id="cantidad" placeholder="Cantidad de botellones" min="1" required>
+                <input type="text" id="nombre" placeholder="Cliente" required>
+                <input type="number" id="cantidad" placeholder="Botellones" min="1" required>
                 <input type="number" id="litros" placeholder="Litros por botellón" min="1" required>
-                <input type="number" id="monto" placeholder="Monto total (Bs)" min="0" step="0.01" required>
+                <input type="number" id="monto" placeholder="Monto (Bs)" min="0" step="0.01" required>
                 <select id="pago">
                     <option value="efectivo">Efectivo</option>
                     <option value="movil">Pago Móvil</option>
                 </select>
             </div>
-            <button onclick="agregarVenta()">➕ Registrar Venta</button>
+            <button onclick="agregarVenta()">➕ Registrar</button>
         </div>
 
-        <div class="card">
-            <h2>Estadísticas del Día 📊</h2>
+        <div class="card" id="statsSection">
+            <h2>📊 Estadísticas</h2>
             <div class="stats-grid" id="stats"></div>
         </div>
 
-        <div class="card">
-            <h2>Registro de Ventas</h2>
+        <div class="card" id="salesSection">
+            <h2>📋 Ventas</h2>
             <div class="sales-list" id="sales-list"></div>
         </div>
 
-        <div class="card">
-            <h2>Generar Corte Diario</h2>
-            <textarea id="observacion" placeholder="Agregar observación..." rows="3"></textarea>
-            <div style="margin-top: 20px;">
-                <button onclick="generarPDF()" style="background: var(--secondary);">📄 Generar Corte del Día</button>
-                <button onclick="reiniciarSistema()" style="background: var(--danger);">🔄 Reiniciar Sistema</button>
+        <div class="card" id="actionsSection">
+            <h2>⚙️ Acciones</h2>
+            <textarea id="observacion" placeholder="Observaciones..." rows="2"></textarea>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="generarPDF()" style="background: var(--secondary); flex: 1;">📄 General Cierre del Dia</button>
+                <button onclick="reiniciarSistema()" style="background: var(--danger); flex: 1;">🔄 Reiniciar Sistema</button>
+				
             </div>
-        </div>
+        </div>	
+		
+        <div class="card" id="actionsSection">
+			<footer>
+                ©2025 RogerWed. | App Ver 5.0 | Interfaz HyperVission 2.5 
+            </footer>	
+        </div>		
+		
     </div>
-    <footer>
-		©2025 RogerWed. Todos los derechos reservados | App Ver 5.0 | Interfaz HyperVission 2.5
-    </footer>
+    <nav class="mobile-bottom-nav">
+        <button class="nav-button" onclick="scrollToSection('statsSection')">📊 Stats</button>
+        <button class="nav-button" onclick="scrollToSection('salesSection')">📋 Ventas</button>
+        <button class="nav-button" onclick="scrollToSection('actionsSection')">⚙️ Acciones</button>
+    </nav>
+
     <script>
+        // Estado de la aplicación
         let estadoApp = JSON.parse(localStorage.getItem('estadoVentas')) || {
             ventas: [],
             observacion: ''
         };
 
+        // Funciones de navegación
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Lógica principal
         function guardarEstado() {
             localStorage.setItem('estadoVentas', JSON.stringify(estadoApp));
         }
@@ -228,7 +271,7 @@
                         ${venta.estado === 'paid' ? 'Pagado ✅' : 'Pendiente ⏳'}
                     </div>
                     <div>${venta.pago === 'efectivo' ? 'Efectivo 💵' : 'Pago Móvil 📱'}</div>
-                    <button onclick="eliminarVenta(${index})" style="background: var(--danger);">🗑️Eliminar</button>
+                    <button onclick="eliminarVenta(${index})" style="background: var(--danger); width: 100%;">🗑️ Eliminar</button>
                 </div>
             `).join('');
         }
@@ -241,32 +284,29 @@
             const movil = estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0);
             const total = efectivo + movil;
 
-            let nivelVentas = '';
-            if (totalBotellones >= 17) nivelVentas = '🚀 Día con Ventas Altas 🔥';
-            else if (totalBotellones >= 10) nivelVentas = '👍 DÍA MEDIO EN VENTAS';
-            else if (totalBotellones < 5) nivelVentas = '😟 DÍA BAJO EN VENTAS';
+
+
 
             stats.innerHTML = `
                 <div class="stat-card">
                     <h3>Total Botellones</h3>
-                    <h1>${totalBotellones}</h1>
-                    <p>${nivelVentas}</p>
+                    <h2>${totalBotellones}</h2>
                 </div>
                 <div class="stat-card">
                     <h3>Litros Vendidos</h3>
-                    <h1>${totalLitros}L</h1>
+                    <h2>${totalLitros}L</h2>
                 </div>
                 <div class="stat-card">
-                    <h3>Efectivo Total</h3>
-                    <h1>Bs ${efectivo.toFixed(2)}</h1>
+                    <h3>Efectivo</h3>
+                    <h2>Bs ${efectivo.toFixed(2)}</h2>
                 </div>
                 <div class="stat-card">
                     <h3>Pago Móvil</h3>
-                    <h1>Bs ${movil.toFixed(2)}</h1>
+                    <h2>Bs ${movil.toFixed(2)}</h2>
                 </div>
                 <div class="stat-card">
                     <h3>Total General</h3>
-                    <h1>Bs ${total.toFixed(2)}</h1>
+                    <h2>Bs ${total.toFixed(2)}</h2>
                 </div>
             `;
         }
@@ -278,9 +318,11 @@
         }
 
         function eliminarVenta(index) {
-            estadoApp.ventas.splice(index, 1);
-            guardarEstado();
-            actualizarInterfaz();
+            if(confirm('¿Seguro que deseas eliminar esta venta?')) {
+                estadoApp.ventas.splice(index, 1);
+                guardarEstado();
+                actualizarInterfaz();
+            }
         }
 
         function generarPDF() {
@@ -291,39 +333,52 @@
             const doc = new jsPDF();
             const fecha = new Date().toLocaleDateString('es-VE');
             
-            doc.setFontSize(18);
-            doc.text(`Corte del Día - ${fecha}`, 20, 20);
+            doc.setFontSize(16);
+            doc.text(`Reporte Diario - ${fecha}`, 15, 15);
             
             doc.setFontSize(12);
-            doc.text(`Observación: ${estadoApp.observacion}`, 20, 30);
+            doc.text(`Observación: ${estadoApp.observacion}`, 15, 30);
             
             const y = 40;
+            
+            // Estadísticas
             const stats = [
                 `Total Botellones: ${estadoApp.ventas.reduce((a, b) => a + b.cantidad, 0)}`,
-                `Litros Vendidos: ${estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0)}L`,
-                `Efectivo Total: Bs ${estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
+                `Litros: ${estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0)}L`,
+                `Efectivo: Bs ${estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
                 `Pago Móvil: Bs ${estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
-                `Total General: Bs ${(estadoApp.ventas.reduce((a, b) => a + b.monto, 0)).toFixed(2)}`
+                `Total: Bs ${(estadoApp.ventas.reduce((a, b) => a + b.monto, 0)).toFixed(2)}`
             ];
             
             stats.forEach((text, index) => {
-                doc.text(text, 20, y + (index * 10));
+                doc.text(text, 15, y + (index * 10));
             });
             
-            doc.save(`Corte_del_dia_${fecha.replace(/\//g, '-')}.pdf`);
+			
+			
+            doc.save(`reporte_${fecha.replace(/\//g, '-')}.pdf`);
         }
 
         function reiniciarSistema() {
-            if (confirm('¿Está seguro de reiniciar todo el sistema?')) {
+            if (confirm('¿Estás seguro de reiniciar todos los datos?')) {
                 localStorage.clear();
                 estadoApp = { ventas: [], observacion: '' };
                 actualizarInterfaz();
             }
         }
 
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker registrado');
+                });
+            });
+        }
+
         // Inicialización
         document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
-        document.getElementById('observacion').value = estadoApp.observacion;
         actualizarInterfaz();
     </script>
 </body>
