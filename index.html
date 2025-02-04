@@ -1,385 +1,236 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIDVA</title>
-    <link href="icon.png" rel="icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        :root {
-            --primary: #2196F3;
-            --secondary: #4CAF50;
-            --danger: #f44336;
-            --touch-size: 50px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIDVA</title>
+  <link href="icon3.png" rel="icon">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+    .header {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
+      padding: 50px 0;
+    }
 
-        body {
-            background: #f0f4f8;
-            -webkit-tap-highlight-color: transparent;
-            padding-bottom: 70px;
-        }
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
 
-        .container {
-            max-width: 100%;
-            padding: 10px;
-        }
+    .header p {
+      font-size: 1.2rem;
+    }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+    .options-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 40px 0;
+    }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    .option-card {
+      width: 300px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
 
-        input, select, textarea, button {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            background: white;
-            -webkit-appearance: none;
-        }
+    .option-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
 
-        button {
-            background: var(--primary);
-            color: white;
-            height: var(--touch-size);
-            font-weight: bold;
-            transition: filter 0.2s;
-            touch-action: manipulation;
-        }
+    .option-card img {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
 
-        button:active {
-            filter: brightness(90%);
-            transform: scale(0.98);
-        }
+    .option-card:hover img {
+      transform: rotate(360deg);
+    }
 
-        .sales-list {
-            margin-top: 20px;
-            max-height: 50vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+    .option-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
 
-        .sale-item {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 12px;
-            margin: 8px 0;
-            background: white;
-            border-radius: 8px;
-            position: relative;
-        }
+    .option-card p {
+      font-size: 1rem;
+      color: #6c757d;
+    }
 
-        .sale-item > div {
-            flex: 1 1 45%;
-            min-width: 120px;
-            padding: 5px;
-            font-size: 14px;
-        }
-
-        .status {
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            touch-action: none;
-        }
-
-        .pending { background: #fff3cd; color: #856404; }
-        .paid { background: #d4edda; color: #155724; }
-
-        .mobile-bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .nav-button {
-            padding: 12px 20px;
-            border-radius: 25px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            font-size: 14px;
-        }
-
-        h1 {
-            font-size: 24px;
+         .footer {
             text-align: center;
-            padding: 15px;
-            color: #333;
+            margin-top: 0px;
+            padding: 2px;
+            color: #666;
+            font-size: 0.9em;
         }
 
-        h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
-            color: #444;
-        }
+    /* Animación de carga */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 10px;
-        }
+    .loading span {
+      font-size: 2rem;
+      color: #6a11cb;
+      animation: spin 2s linear infinite;
+    }
 
-        .stat-card {
-            padding: 15px;
-            border-radius: 10px;
-            background: #f8f9fa;
-            text-align: center;
-        }
-
-        @media (min-width: 600px) {
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            
-            .input-group {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sistema de Ventas de Agua💧</h1>
-        
-        <div class="card" id="mainSection">
-            <div class="input-group">
-                <input type="date" id="fecha" required>
-                <input type="text" id="nombre" placeholder="Cliente" required>
-                <input type="number" id="cantidad" placeholder="Botellones" min="1" required>
-                <input type="number" id="litros" placeholder="Litros por botellón" min="1" required>
-                <input type="number" id="monto" placeholder="Monto (Bs)" min="0" step="0.01" required>
-                <select id="pago">
-                    <option value="efectivo">Efectivo</option>
-                    <option value="movil">Pago Móvil</option>
-                </select>
-            </div>
-            <button onclick="agregarVenta()">➕ Registrar</button>
-        </div>
 
-        <div class="card" id="statsSection">
-            <h2>📊 Estadísticas</h2>
-            <div class="stats-grid" id="stats"></div>
-        </div>
+  <!-- Pantalla de carga -->
+  <div class="loading" id="loadingScreen">
+    <span class="fas fa-spinner"></span>
+  </div>
 
-        <div class="card" id="salesSection">
-            <h2>📋 Ventas</h2>
-            <div class="sales-list" id="sales-list"></div>
-        </div>
+  <!-- Header -->
+  <header class="header">
+    <h1>Bienvenido a SIDVA</h1>
+	<p>Nuestra herramienta de Sistema de Ventas de Agua💧</p>
+    <p>Elige la versión que prefieras: Mobile o PC.</p>
+  </header>
 
-        <div class="card" id="actionsSection">
-            <h2>⚙️ Acciones</h2>
-            <textarea id="observacion" placeholder="Observaciones..." rows="2"></textarea>
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="generarPDF()" style="background: var(--secondary); flex: 1;">📄 General Cierre del Dia</button>
-                <button onclick="reiniciarSistema()" style="background: var(--danger); flex: 1;">🔄 Reiniciar Sistema</button>
-				
-            </div>
-        </div>	
-		
-        <div class="card" id="actionsSection">
-			<footer>
-                ©2025 RogerWed. | App Ver 5.0 | Interfaz HyperVission 2.5 
-            </footer>	
-        </div>		
-		
+  <!-- Opciones -->
+  <section class="container mt-5">
+    <div class="options-container">
+      <!-- Versión Mobile -->
+      <div class="option-card" id="mobileOption">
+        <a href="https://sidvamobile.netlify.app/"><img src="icon1.png" alt="Mobile Icon"></a>
+        <h3>Versión Mobile</h3>
+        <p>Accede a nuestra Webapp optimizada para dispositivos móviles.</p>
+      </div>
+
+      <!-- Versión PC -->
+      <div class="option-card" id="pcOption">
+        <a href="https://sidvapc.netlify.app"><img src="icon.png" alt="PC Icon"></a>
+        <h3>Versión PC</h3>
+        <p>Disfruta de la experiencia de nuestra Webapp completa en tu computadora.</p>
+      </div>
+	  
+      <!-- Quien Somos -->
+      <div href="abaut.html" class="option-card" id="nosotros">
+        <a href="abaut.html"><img src="icon2.png" alt="nosotros Icon"></a>
+        <h3>Todo sobre nosotros</h3>
+        <p>Conoce más sobre la funcion de nuestra herramienta, nosotros y nuestra misión.</p>  
+      </div>	  
     </div>
-    <nav class="mobile-bottom-nav">
-        <button class="nav-button" onclick="scrollToSection('statsSection')">📊 Stats</button>
-        <button class="nav-button" onclick="scrollToSection('salesSection')">📋 Ventas</button>
-        <button class="nav-button" onclick="scrollToSection('actionsSection')">⚙️ Acciones</button>
-    </nav>
+	
 
-    <script>
-        // Estado de la aplicación
-        let estadoApp = JSON.parse(localStorage.getItem('estadoVentas')) || {
-            ventas: [],
-            observacion: ''
-        };
+    </div>
+  </section>
 
-        // Funciones de navegación
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 SIDVA LTD. Todos los derechos reservados, Dev RogerWeb.</p>
+  </footer>
 
-        // Lógica principal
-        function guardarEstado() {
-            localStorage.setItem('estadoVentas', JSON.stringify(estadoApp));
-        }
+  <!-- Scripts -->
+  <script>
+    // Ocultar pantalla de carga después de 2 segundos
+    setTimeout(() => {
+      document.getElementById('loadingScreen').style.display = 'none';
+    }, 2000);
 
-        function agregarVenta() {
-            const nuevaVenta = {
-                fecha: document.getElementById('fecha').value,
-                nombre: document.getElementById('nombre').value,
-                cantidad: parseInt(document.getElementById('cantidad').value),
-                litros: parseInt(document.getElementById('litros').value),
-                monto: parseFloat(document.getElementById('monto').value),
-                pago: document.getElementById('pago').value,
-                estado: 'pending'
-            };
+    // Animaciones con GSAP
+    gsap.from('.header', { duration: 1.5, opacity: 0, y: -50, ease: 'power2.out', delay: 0.5 });
+    gsap.from('.option-card', { 
+      duration: 1, 
+      opacity: 0, 
+      x: -50, 
+      stagger: 0.2, 
+      ease: 'back.out(1.7)', 
+      delay: 1 
+    });
 
-            estadoApp.ventas.push(nuevaVenta);
-            guardarEstado();
-            actualizarInterfaz();
-        }
+    // Agregar interacción a las tarjetas
+    document.getElementById('mobileOption').addEventListener('click', () => {
+      gsap.to('#mobileOption', { 
+        duration: 0.5, 
+        scale: 0.9, 
+        repeat: 1, 
+        yoyo: true, 
+        ease: 'power1.inOut' 
+      });
+      alert('¡Has seleccionado la versión Mobile!');
+    });
 
-        function actualizarInterfaz() {
-            mostrarVentas();
-            actualizarEstadisticas();
-            document.getElementById('observacion').value = estadoApp.observacion;
-        }
+    document.getElementById('pcOption').addEventListener('click', () => {
+      gsap.to('#pcOption', { 
+        duration: 0.5, 
+        scale: 0.9, 
+        repeat: 1, 
+        yoyo: true, 
+        ease: 'power1.inOut' 
+      });
+      alert('¡Has seleccionado la versión PC!');
+    });
+	
+    document.getElementById('nosotros').addEventListener('click', () => {
+      gsap.to('#nosotros', { 
+        duration: 0.5, 
+        scale: 0.9, 
+        repeat: 1, 
+        yoyo: true, 
+        ease: 'power1.inOut' 
+      });
+      alert('¡Has seleccionado todo Sobre nosotros!');
+    });	
 
-        function mostrarVentas() {
-            const lista = document.getElementById('sales-list');
-            lista.innerHTML = estadoApp.ventas.map((venta, index) => `
-                <div class="sale-item">
-                    <div>📅 ${venta.fecha}</div>
-                    <div>👤 ${venta.nombre}</div>
-                    <div>💧 ${venta.cantidad} bot.</div>
-                    <div>⚖️ ${venta.litros}L</div>
-                    <div>💰 Bs ${venta.monto.toFixed(2)}</div>
-                    <div class="status ${venta.estado}" onclick="cambiarEstado(${index})">
-                        ${venta.estado === 'paid' ? 'Pagado ✅' : 'Pendiente ⏳'}
-                    </div>
-                    <div>${venta.pago === 'efectivo' ? 'Efectivo 💵' : 'Pago Móvil 📱'}</div>
-                    <button onclick="eliminarVenta(${index})" style="background: var(--danger); width: 100%;">🗑️ Eliminar</button>
-                </div>
-            `).join('');
-        }
-
-        function actualizarEstadisticas() {
-            const stats = document.getElementById('stats');
-            const totalBotellones = estadoApp.ventas.reduce((a, b) => a + b.cantidad, 0);
-            const totalLitros = estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0);
-            const efectivo = estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0);
-            const movil = estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0);
-            const total = efectivo + movil;
-
-
-
-
-            stats.innerHTML = `
-                <div class="stat-card">
-                    <h3>Total Botellones</h3>
-                    <h2>${totalBotellones}</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>Litros Vendidos</h3>
-                    <h2>${totalLitros}L</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>Efectivo</h3>
-                    <h2>Bs ${efectivo.toFixed(2)}</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>Pago Móvil</h3>
-                    <h2>Bs ${movil.toFixed(2)}</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>Total General</h3>
-                    <h2>Bs ${total.toFixed(2)}</h2>
-                </div>
-            `;
-        }
-
-        function cambiarEstado(index) {
-            estadoApp.ventas[index].estado = estadoApp.ventas[index].estado === 'paid' ? 'pending' : 'paid';
-            guardarEstado();
-            mostrarVentas();
-        }
-
-        function eliminarVenta(index) {
-            if(confirm('¿Seguro que deseas eliminar esta venta?')) {
-                estadoApp.ventas.splice(index, 1);
-                guardarEstado();
-                actualizarInterfaz();
-            }
-        }
-
-        function generarPDF() {
-            estadoApp.observacion = document.getElementById('observacion').value;
-            guardarEstado();
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const fecha = new Date().toLocaleDateString('es-VE');
-            
-            doc.setFontSize(16);
-            doc.text(`Reporte Diario - ${fecha}`, 15, 15);
-            
-            doc.setFontSize(12);
-            doc.text(`Observación: ${estadoApp.observacion}`, 15, 30);
-            
-            const y = 40;
-            
-            // Estadísticas
-            const stats = [
-                `Total Botellones: ${estadoApp.ventas.reduce((a, b) => a + b.cantidad, 0)}`,
-                `Litros: ${estadoApp.ventas.reduce((a, b) => a + (b.cantidad * b.litros), 0)}L`,
-                `Efectivo: Bs ${estadoApp.ventas.filter(v => v.pago === 'efectivo').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
-                `Pago Móvil: Bs ${estadoApp.ventas.filter(v => v.pago === 'movil').reduce((a, b) => a + b.monto, 0).toFixed(2)}`,
-                `Total: Bs ${(estadoApp.ventas.reduce((a, b) => a + b.monto, 0)).toFixed(2)}`
-            ];
-            
-            stats.forEach((text, index) => {
-                doc.text(text, 15, y + (index * 10));
-            });
-            
-			
-			
-            doc.save(`reporte_${fecha.replace(/\//g, '-')}.pdf`);
-        }
-
-        function reiniciarSistema() {
-            if (confirm('¿Estás seguro de reiniciar todos los datos?')) {
-                localStorage.clear();
-                estadoApp = { ventas: [], observacion: '' };
-                actualizarInterfaz();
-            }
-        }
-
-        // Service Worker para PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(registration => {
-                    console.log('Service Worker registrado');
-                });
-            });
-        }
-
-        // Inicialización
-        document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
-        actualizarInterfaz();
-    </script>
+    // Efecto hover en las imágenes
+    gsap.set('.option-card img', { scale: 1 });
+    document.querySelectorAll('.option-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        gsap.to(card.querySelector('img'), { duration: 0.5, scale: 1.2, ease: 'power2.out' });
+      });
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card.querySelector('img'), { duration: 0.5, scale: 1, ease: 'power2.out' });
+      });
+    });
+  </script>
 </body>
 </html>

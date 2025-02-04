@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Sobre nuestra WebApp</title>
+	<link href="icon2.png" rel="icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .nav-bar {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)),
+                        url('https://source.unsplash.com/random/1920x1080/?tech') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .developer-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--secondary-color);
+        }
+
+        .section-content {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        .active-section {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s ease-out;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-30px) translateX(-50%); }
+            60% { transform: translateY(-15px) translateX(-50%); }
+        }
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }	
+
+
+		
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="nav-bar navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">Inicio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#app">WebApp</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#developer">Desarrollador</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Todo Sobre nuestra WebApp</h1>
+            <p class="lead">Descubre más sobre nuestra WebApp y su creador</p>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down fa-2x"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Section -->
+    <section id="app" class="py-5 section-content active-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Sobre la WebApp</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card card h-100 p-4">
+                        <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                        <h3>Rendimiento</h3>
+                        <p>Aplicación optimizada para máximo rendimiento y velocidad</p>
+                    </div>
+                </div>
+				
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card card h-100 p-4">
+                        <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                        <h3>Funcionaminto</h3>
+                        <p>Nuestra WebApp es principalmente creada para funcional de forma local, todo se guarda con localstorage por lo tanto si borra el historial de si navegavor se borrara todo lo echo.</p>
+						<p>Nuestra WebApp proporciona de manera detallada todo nuestro control de cada registro de venta del dia a dia. su respectiva PDF detallado con lo generado en el dia, para un mayor control</p>
+		                <p>Nuestra WebApp nos permite general un corte del dia en su respectiva PDF detallado con lo generado en el dia, para un mayor control</p>
+                    </div>
+                </div>
+
+	            <div class="col-md-6 col-lg-4">
+                    <div class="feature-card card h-100 p-4">
+                        <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                        <h3>Mision</h3>
+                        <p>Nuestro labor es traer una herramienta de venta para un mayor control.</p>
+                    </div>
+                </div>			
+                <!-- Agregar más características aquí -->
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Developer Section -->
+    <section id="developer" class="py-5 section-content">
+        <div class="container">
+            <h2 class="text-center mb-5">Desarrollador</h2>
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <img src="perfil.jpg" class="developer-img" alt="Desarrollador">
+                </div>
+                <div class="col-md-8">
+                    <h3>RogerWed</h3>
+                    <p class="lead">Desarrollador Full Stack con 5 años de experiencia</p>
+                    <div class="social-links">                       
+                        <a href="https://www.instagram.com/Pcheco07/" class="btn btn-outline-info me-2"><i class="fab fa-instagram"></i> instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Bootstrap JS y dependencias -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // Animaciones iniciales
+        gsap.from(".navbar", {duration: 1, y: -100, opacity: 0, ease: "power4.out"});
+        gsap.from(".hero-section h1", {duration: 1.5, y: 50, opacity: 0, ease: "elastic.out(1, 0.3)"});
+        gsap.from(".hero-section p", {duration: 1, delay: 0.5, y: 30, opacity: 0});
+
+        // Animación al hacer scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-content');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        gsap.to(entry.target, {
+                            duration: 0.8,
+                            opacity: 1,
+                            x: 0,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => observer.observe(section));
+        });
+
+        // Animación de navegación
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.remove('active-section');
+                });
+                
+                gsap.fromTo(targetSection,
+                    { x: 100, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
+                );
+                
+                targetSection.classList.add('active-section');
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
